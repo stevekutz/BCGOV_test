@@ -1,6 +1,7 @@
 from python.ingestor.config import Config
 from python.common.rabbitmq import RabbitMQ
-from flask import request, jsonify, Response, json
+from python.common.message_factory import MessageFactory
+from flask import request, jsonify, Response
 from flask_api import FlaskAPI
 import logging
 
@@ -17,10 +18,16 @@ rabbit_mq = RabbitMQ(
     Config.MAX_CONNECTION_RETRIES,
     Config.RETRY_DELAY)
 
+message = MessageFactory.get_message(
+    Config.ENCRYPT_AT_REST,
+    Config.RABBITMQ_MESSAGE_ENCODE,
+    Config.LOG_LEVEL,
+    Config.ENCRYPT_KEY)
+
 
 @application.route('/v1/publish/event', methods=["POST"])
 def create():
-    if rabbit_mq.publish(Config.WRITE_QUEUE, json.dumps(request.json)):
+    if rabbit_mq.publish(Config.WRITE_QUEUE, message.encode_ingested_message(request.json)):
         return jsonify(request.json), 200
     else:
         return Response('Unavailable', 500, mimetype='application/json')

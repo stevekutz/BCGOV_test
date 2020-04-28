@@ -7,13 +7,13 @@ class RabbitMQ:
     MaximumTriesAfterError = 5
 
     def __init__(self, username, password, host_url, log_level, retries=5, retry_delay=30):
-        self.amqp_connection = self._get_connection_url(username, password, host_url, retries, retry_delay)
-        self.connection = self._get_connection(self.amqp_connection)
+        self.connection_string = self._build_connection_string(username, password, host_url, retries, retry_delay)
+        self.connection = self._get_connection(self.connection_string)
         self.channel = self._get_channel(self.connection)
         logging.basicConfig(level=log_level)
 
     @staticmethod
-    def _get_connection_url(user: str, password: str, host: str, retries: int, retry_delay: int) -> str:
+    def _build_connection_string(user: str, password: str, host: str, retries: int, retry_delay: int) -> str:
         string = "amqp://{}:{}@{}:5672/%2F?connection_attempts={}&retry_delay={}".format(
             user,
             password,
@@ -24,7 +24,7 @@ class RabbitMQ:
         logging.info(string)
         return string
 
-    def consume(self, queue_name: str, callback ):
+    def consume(self, queue_name: str, callback):
         self._verify_or_create(queue_name)
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
@@ -46,7 +46,7 @@ class RabbitMQ:
 
             except Exception as error:
                 logging.warning("Could not publish message to queue ... trying to reestablish the connection")
-                self.connection = self._get_connection(self.amqp_connection)
+                self.connection = self._get_connection(self.connection_string)
                 self.channel = self._get_channel(self.connection)
                 self.channel.queue_declare(queue=queue_name, durable=True)
         
@@ -63,7 +63,7 @@ class RabbitMQ:
 
             except Exception as error:
                 logging.warning("Could not declare queue ... trying to reestablish the connection")
-                self.connection = self._get_connection(self.amqp_connection)
+                self.connection = self._get_connection(self.connection_string)
                 self.channel = self._get_channel(self.connection)
         
         return False
