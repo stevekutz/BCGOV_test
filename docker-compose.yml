@@ -68,3 +68,15 @@ services:
           DB_PASSWORD: "${DB_PASSWORD}"
           ENCRYPT_AT_REST: "${ENCRYPT_AT_REST}"
           ENCRYPT_KEY: "${ENCRYPT_KEY}"
+
+    paybc_api:
+        build:
+          context: python
+          dockerfile: paybc_api/Dockerfile-local
+        environment:
+          PAYBC_API_SECRET: "${PAYBC_API_SECRET}"
+          CLIENT_ID: "${CLIENT_ID}"
+          CLIENT_SECRET: "${CLIENT_SECRET}"
+
+        ports:
+          - "5001:5001"
