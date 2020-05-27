@@ -7,9 +7,6 @@ RUN pip install -r /tmp/requirements.txt
 COPY paybc_api/*.py /home/appuser/python/paybc_api/
 COPY paybc_api/website/*.py /home/appuser/python/paybc_api/website/
 
-RUN mkdir /home/appuser/python/paybc_api/db
-CMD ["sqlite3" "/home/appuser/python/db.sqlite"]
-
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
