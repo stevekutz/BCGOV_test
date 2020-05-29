@@ -4,15 +4,14 @@ metadata: {}
 parameters:
 - name: NAME
 - name: COMPONENT
-  value: ingestor
+  value: paybc
 - name: PHASE
 - name: SUFFIX
 - name: VERSION
 - name: HOST
-- name: RABBITMQ_URL
-- name: INGEST_USER
-- name: INGEST_PASS
-- name: SECRET_KEY
+- name: CLIENT_ID
+- name: CLIENT_SECRET
+- name: PAYBC_API_SECRET
 - name: FLASK_ENV
   value: 'development'
 - name: URL_SUFFIX
