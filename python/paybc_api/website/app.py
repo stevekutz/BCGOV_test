@@ -11,7 +11,7 @@ def create_app(config=Config):
     app = Flask(__name__)
 
     # Set the secret key to some random bytes
-    app.secret_key = config.PAYBC_API_SECRET
+    app.secret_key = config.PAYBC_FLASK_SECRET
 
     # load app specified configuration
     app.config.update(
@@ -34,12 +34,12 @@ def setup_app(app, config):
 
         client_id_issued_at = int(time.time())
         client = OAuth2Client(
-            client_id=config.CLIENT_ID,
+            client_id=config.PAYBC_CLIENT_ID,
             client_id_issued_at=client_id_issued_at,
             user_id=user.id,
         )
 
-        client.client_secret = config.CLIENT_SECRET
+        client.client_secret = config.PAYBC_CLIENT_SECRET
 
         client_metadata = {
             "client_name": 'test_client',

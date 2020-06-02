@@ -1,5 +1,6 @@
 .docker/
 ingest/.env/
+scripts/*secrets.sh
 .vscode/
 .env
 __pycache__/

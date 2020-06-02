@@ -9,9 +9,9 @@ parameters:
 - name: SUFFIX
 - name: VERSION
 - name: HOST
-- name: CLIENT_ID
-- name: CLIENT_SECRET
-- name: PAYBC_API_SECRET
+- name: PAYBC_CLIENT_ID
+- name: PAYBC_CLIENT_SECRET
+- name: PAYBC_FLASK_SECRET
 - name: FLASK_ENV
   value: 'development'
 - name: URL_SUFFIX
@@ -36,8 +36,9 @@ objects:
 - apiVersion: v1
   kind: Secret
   stringData:
-    username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASS}
+    paybc-client-id: ${PAYBC_CLIENT_ID}
+    paybc-client-secret: ${PAYBC_CLIENT_SECRET}
+    paybc-flask-secret: ${PAYBC_FLASK_SECRET}
   metadata:
     name: ${NAME}${SUFFIX}
     annotations:
@@ -90,21 +91,21 @@ objects:
             - containerPort: 8080
               protocol: TCP
           env:
-            - name: PAYBC_API_SECRET
+            - name: PAYBC_FLASK_SECRET
               valueFrom:
                 secretKeyRef:
                   name: ${NAME}${SUFFIX}
-                  key: username
-            - name: CLIENT_ID
+                  key: paybc-flask-secret
+            - name: PAYBC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: ${NAME}${SUFFIX}
-                  key: username
-            - name: CLIENT_SECRET
+                  key: paybc-client-id
+            - name: PAYBC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: ${NAME}${SUFFIX}
-                  key: password
+                  key: paybc-client-secret
           resources:
             limits:
               cpu: 80m
