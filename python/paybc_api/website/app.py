@@ -17,6 +17,7 @@ def create_app(config=Config):
     app.config.update(
         OAUTH2_REFRESH_TOKEN_GENERATOR=True,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        AUTHLIB_INSECURE_TRANSPORT=1,  # DEBUG - REMOVE BEFORE FLIGHT
         SQLALCHEMY_DATABASE_URI='sqlite:///:memory:'
     )
 
