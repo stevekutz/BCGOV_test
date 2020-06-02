@@ -1,7 +1,7 @@
 from flask import Blueprint, request, session, url_for
 from flask import render_template, redirect, jsonify
 from python.paybc_api.website.oauth2 import authorization, require_oauth
-
+import logging
 
 bp = Blueprint(__name__, 'home')
 
@@ -16,16 +16,18 @@ def revoke_token():
     return authorization.create_endpoint_response('revocation')
 
 
-@bp.route('/search', methods=['POST'])
+@bp.route('/api_v2/search', methods=['GET'])
 @require_oauth()
 def search():
-    if request.method == 'POST':
-        # lookup the request using the VIPS API
-        posted_data = request.get_json()
-        return jsonify(search_for_invoice(posted_data))
+    if request.method == 'GET':
+        return jsonify(search_for_invoice(
+            request.args.get('invoice_number', None),
+            request.args.get('pay_bc_reference', None),
+            request.args.get('check_value', None)
+        ))
 
 
-@bp.route('/invoice/<invoice_number>', methods=['GET'])
+@bp.route('/api_v2/invoice/<invoice_number>', methods=['GET'])
 @require_oauth()
 def show(invoice_number):
     if request.method == 'GET':
@@ -33,25 +35,44 @@ def show(invoice_number):
         return jsonify(get_invoice(invoice_number))
 
 
-def search_for_invoice(posted_data):
-    if posted_data is not None and posted_data['invoice_number'] == 1234 and posted_data['check'] == 4321:
-        return dict({
-            "items": [
-                {"url": request.host_url + 'invoice/1234'}
-            ]
-        })
+def search_for_invoice(invoice_number, pay_bc_reference, check_value):
+    logging.warning('invoice_number: ' + invoice_number)
+    logging.warning('pay_bc_reference: ' + pay_bc_reference)
+    logging.warning('check_value: ' + check_value)
+    if invoice_number is not None and check_value is not None and pay_bc_reference is not None:
+        # TODO - replace hard code data below with lookup from VIPS API
+        if invoice_number == "1234" and check_value == "Smith":
+            return dict({
+                "items": [
+                    {"url": request.host_url + 'api_v2/invoice/1234'}
+                ]
+            })
+        else:
+            return dict({
+                "Error": 'An invoice by that number is not found'
+            })
     else:
         return dict({
-            "error": 'An IRP Review invoice with that number was not found'
+            "Error": 'insufficient data supplied'
         })
 
 
 def get_invoice(invoice_number):
     if invoice_number == '1234':
         return dict({
-            "items": [
-                {"url": request.host_url + 'invoice/1234'}
-            ]
+            "invoice_number": "RSI_TEST_004",
+            "pbc_ref_number": "10006",
+            "party_number": 0,
+            "party_name": "RSI",
+            "account_number": "0",
+            "site_number": "0",
+            "cust_trx_type": "Review Notice of Driving Prohibition",
+            "term_due_date": "2017-03-03T08:00:00Z",
+            "total": 200.00,
+            "amount_due": 200.00,
+            "attribute1": "",
+            "attribute2": "",
+            "attribute3": ""
         })
     else:
         return dict({
