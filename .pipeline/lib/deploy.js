@@ -36,9 +36,7 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].memory_limit
     }
   }))
-  console.log("current phase: " + phase)
-  if (false) {
-    objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-paybc-deploy.yaml`, {
+  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-paybc-deploy.yaml`, {
       'param': {
         'NAME': phases[phase].name,
         'SUFFIX': phases[phase].suffix,
@@ -51,7 +49,6 @@ module.exports = settings => {
         'MEMORY_LIMIT': phases[phase].memory_limit
       }
     }))
-  }
 
   objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-ingestor-deploy.yaml`, {
     'param':{
