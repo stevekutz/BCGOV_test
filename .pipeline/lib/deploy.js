@@ -36,7 +36,8 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].memory_limit
     }
   }))
-  if (phase === 'dev' || phase === "pr") {
+  console.log("current phase: " + phase)
+  if (false) {
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-paybc-deploy.yaml`, {
       'param': {
         'NAME': phases[phase].name,
