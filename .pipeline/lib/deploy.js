@@ -37,7 +37,7 @@ module.exports = settings => {
     }
   }))
 
-  if (false) {
+  if (phase === "dev" || phase === "pr") {
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-paybc-deploy.yaml`, {
       'param': {
         'NAME': phases[phase].name,
