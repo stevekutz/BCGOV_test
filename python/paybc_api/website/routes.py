@@ -2,6 +2,7 @@ from flask import Blueprint, request, session, url_for
 from flask import render_template, redirect, jsonify
 from python.paybc_api.website.oauth2 import authorization, require_oauth
 import logging
+import datetime
 
 bp = Blueprint(__name__, 'home')
 
@@ -19,6 +20,12 @@ def revoke_token():
 @bp.route('/api_v2/search', methods=['GET'])
 @require_oauth()
 def search():
+    """
+    On the PayBC site, a user lookups an invoice to be paid. PayBC searches for
+    the invoice in our system using a GET request with an invoice number and a
+    check_value.  We return an array of items to be paid.
+    :return:
+    """
     if request.method == 'GET':
         return jsonify(search_for_invoice(
             request.args.get('invoice_number', None),
@@ -30,9 +37,34 @@ def search():
 @bp.route('/api_v2/invoice/<invoice_number>', methods=['GET'])
 @require_oauth()
 def show(invoice_number):
+    """
+    PayBC requests details on the item to be paid from this endpoint.
+    :param invoice_number:
+    :return:
+    """
     if request.method == 'GET':
         # lookup the request using the VIPS API
         return jsonify(get_invoice(invoice_number))
+
+
+@bp.route('/api_v2/receipt', methods=['POST'])
+@require_oauth()
+def receipt():
+    """
+    After PayBC verifies that the payment has been approved, it submits
+    a list of invoices that have been paid (a user can pay multiple
+    payments simultaneously), we'll notify VIPS of the payment and
+    return the following to show that the receipt has been received.
+    :return:
+    """
+    if request.method == 'POST':
+        return jsonify(dict({
+            "status": "APP",
+            "receipt_number": "TEST_RECEIPT",
+            # "receipt_date ": "28-NOV-2017",
+            "receipt_date ": datetime.date.today().strftime('%d-%b-%Y'),
+            "receipt_amount": 200.00
+        }))
 
 
 def search_for_invoice(invoice_number, pay_bc_reference, check_value):
