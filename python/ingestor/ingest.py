@@ -1,13 +1,12 @@
 from python.ingestor.config import Config
 from python.common.rabbitmq import RabbitMQ
 from python.common.message_factory import MessageFactory
-from flask import request, jsonify, Response
-from flask_api import FlaskAPI
+from flask import request, jsonify, Response, Flask
 import xmltodict
 import logging
 
 
-application = FlaskAPI(__name__)
+application = Flask(__name__)
 logging.basicConfig(level=Config.LOG_LEVEL)
 logging.warning('*** ingestor initialized ***')
 
@@ -34,7 +33,7 @@ def create():
         request_data = request.json
 
     if rabbit_mq.publish(Config.WRITE_QUEUE, message.encode_ingested_message(request_data)):
-        return jsonify(request.json), 200
+        return jsonify(request_data), 200
     else:
         return Response('Unavailable', 500, mimetype='application/json')
 
