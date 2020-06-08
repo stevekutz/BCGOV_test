@@ -2,7 +2,6 @@ from python.ingestor.config import Config
 from python.common.rabbitmq import RabbitMQ
 from python.common.message_factory import MessageFactory
 from flask import request, jsonify, Response, Flask
-import xmltodict
 import logging
 
 
@@ -28,7 +27,7 @@ message = MessageFactory.get_message(
 @application.route('/v1/publish/event', methods=["POST"])
 def create():
     if request.content_type == 'application/xml':
-        request_data = xmltodict.parse(request.data)
+        request_data = request.data.decode("utf-8")
     else:
         request_data = request.json
 
