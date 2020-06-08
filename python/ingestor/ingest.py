@@ -3,6 +3,7 @@ from python.common.rabbitmq import RabbitMQ
 from python.common.message_factory import MessageFactory
 from flask import request, jsonify, Response
 from flask_api import FlaskAPI
+import xmltodict
 import logging
 
 
@@ -27,7 +28,12 @@ message = MessageFactory.get_message(
 
 @application.route('/v1/publish/event', methods=["POST"])
 def create():
-    if rabbit_mq.publish(Config.WRITE_QUEUE, message.encode_ingested_message(request.json)):
+    if request.content_type == 'application/xml':
+        request_data = xmltodict.parse(request.data)
+    else:
+        request_data = request.json
+
+    if rabbit_mq.publish(Config.WRITE_QUEUE, message.encode_ingested_message(request_data)):
         return jsonify(request.json), 200
     else:
         return Response('Unavailable', 500, mimetype='application/json')
