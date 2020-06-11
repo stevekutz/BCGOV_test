@@ -2,8 +2,9 @@ from python.writer.config import Config
 from python.writer.database import MsSQL
 from python.writer.mapper import Mapper
 from python.common.rabbitmq import RabbitMQ
-from python.common.message_factory import MessageFactory
+from python.common.helper import Helper
 import logging
+import json
 
 
 class Listener:
@@ -15,13 +16,12 @@ class Listener:
          - finally passing a dict to the Database class for writing
     """
     
-    def __init__(self, config, database, mapper, rabbit_writer, rabbit_listener, message):
+    def __init__(self, config, database, mapper, rabbit_writer, rabbit_listener):
         self.config = config
         self.database = database
         self.mapper = mapper
         self.listener = rabbit_listener
         self.writer = rabbit_writer
-        self.message = message
         logging.basicConfig(level=config.LOG_LEVEL)
         logging.warning('*** writer initialized ***')
 
@@ -33,7 +33,9 @@ class Listener:
     def callback(self, ch, method, properties, body):
         logging.info('message received; callback invoked')
 
-        message_dict = self.message.decode_validated_message(body)
+        # convert body (in bytes) to string 
+        message = body.decode(self.config.RABBITMQ_MESSAGE_ENCODE)
+        message_dict = json.loads(message)
 
         # The Mapper is responsible for converting the message into a 
         # list of tables for insertion into a database.  Each table includes
@@ -50,9 +52,8 @@ class Listener:
             # remove the message from RabbitMQs WRITE_WATCH_QUEUE
             ch.basic_ack(delivery_tag=method.delivery_tag)
         else:
-            if self.writer.publish(
-                    self.config.FAIL_QUEUE,
-                    self.message.encode_validated_message(message_dict, result)):
+            message_with_errors_appended = Helper.add_error_to_message(message_dict, result)
+            if self.writer.publish(self.config.FAIL_QUEUE, json.dumps(message_with_errors_appended)):
                 ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
@@ -74,10 +75,5 @@ if __name__ == "__main__":
             Config.RABBITMQ_URL,
             Config.LOG_LEVEL,
             Config.MAX_CONNECTION_RETRIES,
-            Config.RETRY_DELAY),
-        MessageFactory.get_message(
-            Config.ENCRYPT_AT_REST,
-            Config.RABBITMQ_MESSAGE_ENCODE,
-            Config.LOG_LEVEL,
-            Config.ENCRYPT_KEY)
+            Config.RETRY_DELAY)
     ).main()
