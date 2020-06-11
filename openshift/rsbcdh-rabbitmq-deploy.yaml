@@ -104,7 +104,11 @@ objects:
           ]
         } 
     enabled_plugins: |
-      [rabbitmq_management].
+      [
+        rabbitmq_management,
+        rabbitmq_shovel,
+        rabbitmq_shovel_management
+      ].
 
 - kind: Service
   apiVersion: v1
@@ -228,12 +232,12 @@ objects:
           - name: RABBITMQ_DEFAULT_USER
             valueFrom:
               secretKeyRef:
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-${PHASE}
                 key: username
           - name: RABBITMQ_DEFAULT_PASS
             valueFrom:
               secretKeyRef:
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-${PHASE}
                 key: password
           - name: K8S_SERVICE_NAME
             value: ${NAME}-${COMPONENT}${SUFFIX}
