@@ -3,9 +3,9 @@ from python.common.config import Config as BaseConfig
 
 
 class Config(BaseConfig):
-    WATCH_QUEUE                 = os.getenv('WATCH_QUEUE', 'ETK')
-    VALID_QUEUE                 = os.getenv('VALID_QUEUE', 'ETK.valid')
-    FAIL_QUEUE                  = os.getenv('FAIL_QUEUE', 'ETK.not-valid')
+    WATCH_QUEUE                 = os.getenv('WATCH_QUEUE')
+    VALID_QUEUE                 = os.getenv('VALID_QUEUE')
+    FAIL_QUEUE                  = os.getenv('FAIL_QUEUE')
     SCHEMA_PATH                 = os.getenv('SCHEMA_PATH', 'python/validator/')
     SCHEMA_FILENAME             = os.getenv('SCHEMA_FILENAME', 'schema.json')
     VALIDATOR_USER              = os.getenv('VALIDATOR_USER')
