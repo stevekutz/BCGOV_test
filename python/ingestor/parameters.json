@@ -1,0 +1,10 @@
+{
+    "ETK": {
+      "encrypt-at-rest": false,
+      "queue": "ETK"
+    },
+    "IRP": {
+      "encrypt-at-rest": false,
+      "queue": "DF"
+    }
+}

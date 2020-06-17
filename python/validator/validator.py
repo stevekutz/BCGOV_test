@@ -1,19 +1,13 @@
 import logging
-import json
+from python.common.helper import load_json_into_dict
 from cerberus import Validator as Cerberus
 
 
 class Validate:
 
     def __init__(self, config):
-        self.schema = self._get_schema(config.SCHEMA_PATH + config.SCHEMA_FILENAME)
+        self.schema = load_json_into_dict(config.SCHEMA_PATH + config.SCHEMA_FILENAME)
         logging.basicConfig(level=config.LOG_LEVEL)
-
-    @staticmethod
-    def _get_schema(file_name) -> dict:
-        with open(file_name, 'r') as f:
-            data = f.read()
-        return json.loads(data)
 
     def validate(self, message: dict) -> dict:
         """

@@ -1,17 +1,11 @@
-import json
+from python.common.helper import load_json_into_dict
 from pydash import objects
 
 
 class Mapper:
 
     def __init__(self, config):
-        self.mappings = self.get_mappings(config.MAPPER_CONFIG_FILENAME)
-
-    @staticmethod
-    def get_mappings(file_name) -> dict:
-        with open(file_name, 'r') as f:
-            data = f.read()
-        return json.loads(data)
+        self.mappings = load_json_into_dict(config.MAPPER_CONFIG_FILENAME)
 
     def convert_to_tables(self, message: dict) -> list:
         """
