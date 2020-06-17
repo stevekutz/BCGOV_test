@@ -41,7 +41,7 @@ module.exports = settings => {
       'SOURCE_CONTEXT_DIR': 'python'
     }
   }))
-  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator_df-build.yaml`, {
+  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator-forms-build.yaml`, {
     'param':{
       'NAME': phases[phase].name,
       'SUFFIX': phases[phase].suffix,
