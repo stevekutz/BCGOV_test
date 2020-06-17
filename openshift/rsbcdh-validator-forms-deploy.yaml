@@ -12,8 +12,9 @@ parameters:
 - name: RABBITMQ_URL
 - name: VALIDATOR_USER
 - name: VALIDATOR_PASS
-- name: SECRET_KEY
-  value: 'development'
+- name: WATCH_QUEUE
+- name: VALID_QUEUE
+- name: FAIL_QUEUE
 - name: PYTHONPATH
   value: '/opt/app-root/lib/python3.6/site-packages:/opt/app-root/src/'
 - name: URL_SUFFIX
@@ -94,6 +95,12 @@ objects:
                 secretKeyRef:
                   name: ${NAME}-${PHASE}
                   key: password
+            - name: WATCH_QUEUE
+              value: 'DF'
+            - name: VALID_QUEUE
+              value: 'DF.valid'
+            - name: FAIL_QUEUE
+              value: 'DF.not-valid'
             - name: PYTHONPATH
               value: ${PYTHONPATH}
           resources:
