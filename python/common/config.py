@@ -10,6 +10,7 @@ class Config:
     RETRY_DELAY                 = os.getenv('RETRY_DELAY', 30)
     LOG_LEVEL                   = os.environ.get('LOG_LEVEL', 'INFO').upper()
     RABBITMQ_MESSAGE_ENCODE     = os.getenv('RABBITMQ_MESSAGE_ENCODE', 'utf-8')
+    ENCRYPT_AT_REST             = os.getenv('ENCRYPT_AT_REST', 'FALSE')
     ENCRYPT_KEY                 = os.getenv('ENCRYPT_KEY')
 
 
