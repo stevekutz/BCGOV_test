@@ -5,7 +5,7 @@ from python.validator.validator import Validate
 
 # To override the config class for testing
 class Config(ValidationConfig):
-    SCHEMA_FILENAME = 'schema.json'
+    SCHEMA_FILENAME = 'etk_schemas.json'
     
 
 class TestValidator:

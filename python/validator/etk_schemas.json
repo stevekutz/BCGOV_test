@@ -1,5 +1,6 @@
-{
-  "basic_message_structure": {
+[
+  {
+    "name": "evt_issuance",
     "allow_unknown": true,
     "cerberus_rules": {
       "event_id": {
@@ -17,20 +18,8 @@
       "event_type": {
         "type": "string",
         "required": true,
-        "allowed": [
-          "evt_issuance",
-          "vt_query",
-          "vt_payment",
-          "vt_dispute",
-          "vt_dispute_status_update",
-          "vt_dispute_finding"
-        ]
-      }
-    }
-  },
-  "evt_issuance": {
-    "allow_unknown": true,
-    "cerberus_rules": {
+        "allowed": ["evt_issuance"]
+      },
       "evt_issuance": {
         "type": "dict",
         "required": true,
@@ -105,9 +94,27 @@
       }
     }
   },
-  "vt_query": {
+  {
+    "name": "vt_query",
     "allow_unknown": true,
     "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      },
+      "event_version": {
+        "type": "string",
+        "required": true
+      },
+      "event_date_time": {
+        "type": "string",
+        "required": true
+      },
+      "event_type": {
+        "type": "string",
+        "required": true,
+        "allowed": ["vt_query"]
+      },
       "vt_query": {
         "type": "dict",
         "required": true,
@@ -120,9 +127,27 @@
       }
     }
   },
-  "vt_payment": {
+  {
+    "name": "vt_payment",
     "allow_unknown": true,
     "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      },
+      "event_version": {
+        "type": "string",
+        "required": true
+      },
+      "event_date_time": {
+        "type": "string",
+        "required": true
+      },
+      "event_type": {
+        "type": "string",
+        "required": true,
+        "allowed": ["vt_payment"]
+      },
       "vt_payment": {
         "type": "dict",
         "required": true,
@@ -151,9 +176,27 @@
       }
     }
   },
-  "vt_dispute": {
+  {
+    "name": "vt_dispute",
     "allow_unknown": true,
     "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      },
+      "event_version": {
+        "type": "string",
+        "required": true
+      },
+      "event_date_time": {
+        "type": "string",
+        "required": true
+      },
+      "event_type": {
+        "type": "string",
+        "required": true,
+        "allowed": ["vt_dispute"]
+      },
       "vt_dispute": {
         "type": "dict",
         "required": true,
@@ -174,9 +217,27 @@
       }
     }
   },
-  "vt_dispute_status_update": {
+  {
+    "name": "vt_dispute_status_update",
     "allow_unknown": true,
     "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      },
+      "event_version": {
+        "type": "string",
+        "required": true
+      },
+      "event_date_time": {
+        "type": "string",
+        "required": true
+      },
+      "event_type": {
+        "type": "string",
+        "required": true,
+        "allowed": ["vt_dispute_status_update"]
+      },
       "vt_dispute_status_update": {
         "type": "dict",
         "required": true,
@@ -197,9 +258,27 @@
       }
     }
   },
-  "vt_dispute_finding": {
+  {
+    "name": "vt_dispute_finding",
     "allow_unknown": true,
     "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      },
+      "event_version": {
+        "type": "string",
+        "required": true
+      },
+      "event_date_time": {
+        "type": "string",
+        "required": true
+      },
+      "event_type": {
+        "type": "string",
+        "required": true,
+        "allowed": ["vt_dispute_finding"]
+      },
       "vt_dispute_finding": {
         "type": "dict",
         "required": true,
@@ -228,4 +307,4 @@
       }
     }
   }
-}
+]

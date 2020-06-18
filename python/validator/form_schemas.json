@@ -1,0 +1,12 @@
+[
+  {
+    "name": "IRP",
+    "allow_unknown": true,
+    "cerberus_rules": {
+      "event_id": {
+        "type": "integer",
+        "required": true
+      }
+    }
+  }
+]

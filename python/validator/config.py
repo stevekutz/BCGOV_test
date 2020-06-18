@@ -7,7 +7,7 @@ class Config(BaseConfig):
     VALID_QUEUE                 = os.getenv('VALID_QUEUE')
     FAIL_QUEUE                  = os.getenv('FAIL_QUEUE')
     SCHEMA_PATH                 = os.getenv('SCHEMA_PATH', 'python/validator/')
-    SCHEMA_FILENAME             = os.getenv('SCHEMA_FILENAME', 'schema.json')
+    SCHEMA_FILENAME             = os.getenv('SCHEMA_FILENAME', 'etk_schemas.json')
     VALIDATOR_USER              = os.getenv('VALIDATOR_USER')
     VALIDATOR_PASS              = os.getenv('VALIDATOR_PASS')
 

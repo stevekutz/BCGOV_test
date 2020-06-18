@@ -15,6 +15,7 @@ parameters:
 - name: WATCH_QUEUE
 - name: VALID_QUEUE
 - name: FAIL_QUEUE
+- name: SCHEMA_FILENAME
 - name: ENCRYPT_AT_REST
 - name: PYTHONPATH
   value: '/opt/app-root/lib/python3.6/site-packages:/opt/app-root/src/'
@@ -102,6 +103,8 @@ objects:
               value: 'ETK.valid'
             - name: FAIL_QUEUE
               value: 'ETK.not-valid'
+            - name: SCHEMA_FILENAME
+              value: 'etk_schemas.json'
             - name: ENCRYPT_AT_REST
               value: 'FALSE'
             - name: PYTHONPATH
