@@ -49,7 +49,7 @@ module.exports = settings => {
         'CPU_LIMIT': phases[phase].cpu_limit,
         'MEMORY_REQUEST': phases[phase].memory_request,
         'MEMORY_LIMIT': phases[phase].memory_limit,
-        'GIT_REPO': oc.git.ref
+        'GIT_REPO': JSON.stringify(oc.git)
       }
     }))
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator-forms-deploy.yaml`, {
