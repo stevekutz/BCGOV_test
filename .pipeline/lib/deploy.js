@@ -51,7 +51,8 @@ module.exports = settings => {
         'MEMORY_LIMIT': phases[phase].memory_limit,
         // 'GIT_REPO': JSON.stringify(oc.git)
         // 'GIT_REPO': JSON.stringify(phases[phase])
-        'GIT_REPO': JSON.stringify(phase)
+        // 'GIT_REPO': JSON.stringify(phase) = 'pr'
+        'GIT_REPO': JSON.stringify(oc)
       }
     }))
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator-forms-deploy.yaml`, {
