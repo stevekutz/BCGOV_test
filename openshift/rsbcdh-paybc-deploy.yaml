@@ -12,7 +12,6 @@ parameters:
 - name: PAYBC_CLIENT_ID
 - name: PAYBC_CLIENT_SECRET
 - name: PAYBC_FLASK_SECRET
-- name: GIT_REPO
 - name: AUTHLIB_INSECURE_TRANSPORT
 - name: FLASK_ENV
   value: 'development'
@@ -110,8 +109,6 @@ objects:
                   key: paybc-client-secret
             - name: AUTHLIB_INSECURE_TRANSPORT
               value: "True"
-            - name: GIT_REPO
-              value: ${GIT_REPO}
           resources:
             limits:
               cpu: 80m

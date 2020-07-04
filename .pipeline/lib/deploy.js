@@ -48,12 +48,7 @@ module.exports = settings => {
         'CPU_REQUEST': phases[phase].cpu_request,
         'CPU_LIMIT': phases[phase].cpu_limit,
         'MEMORY_REQUEST': phases[phase].memory_request,
-        'MEMORY_LIMIT': phases[phase].memory_limit,
-        // 'GIT_REPO': JSON.stringify(oc.git)
-        // 'GIT_REPO': JSON.stringify(phases[phase])
-        // 'GIT_REPO': JSON.stringify(phase) = 'pr'
-        // 'GIT_REPO': JSON.stringify({OpenShiftClientX})
-        'GIT_REPO': JSON.stringify(settings)
+        'MEMORY_LIMIT': phases[phase].memory_limit
       }
     }))
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator-forms-deploy.yaml`, {
