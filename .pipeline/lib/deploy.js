@@ -52,7 +52,8 @@ module.exports = settings => {
         // 'GIT_REPO': JSON.stringify(oc.git)
         // 'GIT_REPO': JSON.stringify(phases[phase])
         // 'GIT_REPO': JSON.stringify(phase) = 'pr'
-        'GIT_REPO': JSON.stringify({OpenShiftClientX})
+        // 'GIT_REPO': JSON.stringify({OpenShiftClientX})
+        'GIT_REPO': JSON.stringify(settings)
       }
     }))
     objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/rsbcdh-validator-forms-deploy.yaml`, {
