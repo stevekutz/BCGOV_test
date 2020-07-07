@@ -19,7 +19,6 @@ class Validate:
         :param message:
         :return: dictionary
         """
-
         cerberus_errors = []
 
         # check that message is a dictionary
@@ -36,14 +35,27 @@ class Validate:
             if cerberus.validate(message):
                 logging.info(' - message passed validation for type: ' + schema['name'])
                 return {'isSuccess': True, 'description': ''}
-            else:
-                cerberus_errors.append(cerberus.errors)
+            cerberus_errors.append([cerberus.errors])
 
         logging.info(' - message failed validation validation')
         return {'isSuccess': False, 'description': self.get_best_error(cerberus_errors)}
 
     @staticmethod
-    def get_best_error(errors: list):
-        # TODO - develop an algorithm that returns the error messages
-        #  from the schema with best match.
-        return errors.pop(0)
+    def get_best_error(list_of_errors: list):
+        """
+        The validation process loops through a list of schemas stopping when
+        it finds a match.  If it doesn't find a match, we don't know which
+        schema was the closest match. This method returns the schema with the
+        fewest errors -- assuming that's the schema that's most relevant.
+        :param list_of_errors:
+        :return:
+        """
+        relevant_errors = []
+        first_loop = True
+        for errors in list_of_errors:
+            if first_loop:
+                relevant_errors = errors
+                first_loop = False
+            if len(errors) < len(relevant_errors):
+                relevant_errors = errors
+        return relevant_errors[0]
