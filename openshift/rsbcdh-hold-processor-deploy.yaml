@@ -17,11 +17,6 @@ parameters:
 - name: RABBITMQ_USER
 - name: RABBITMQ_PASS
 - name: CRON_SCHEDULE
-- name: SOURCE_QUEUE
-  value: 'DF.hold'
-- name: DESTINATION_QUEUE
-  value: 'DF.valid'
-- name: CRON_SCHEDULE
   description: 'Cron-like schedule expression. Default: Once every 5 minutes'
   value: '*/5 * * * *'
 - name: URL_SUFFIX
@@ -64,13 +59,17 @@ objects:
                       echo -e "-------- STARTING CRON --------\n"
 
                       ENDPOINT="https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold"
-
-                      AMPQ="amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}"
+                      echo "endpoint: ${ENDPOINT}"
+                      echo ""
+                      AMQP="amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}"
+                      echo "amqp connection string: ${AMQP}"
+                      echo ""
+                      echo "source queue: ${SOURCE_QUEUE} -> destination: ${DESTINATION_QUEUE}"
 
                       curl --request PUT --url ${ENDPOINT} \
                       --user ${RABBITMQ_USER}:${RABBITMQ_PASS}  \
                       --header "Content-Type: application/json" \
-                      --data '{"value": {"src-protocol":"amqp091","src-uri":"'${AMPQ}'","src-queue":"'${SOURCE_QUEUE}'","dest-protocol": "amqp091","dest-uri":"'${AMPQ}'","dest-queue":"'${DESTINATION_QUEUE}'","src-delete-after": "queue-length"}}'
+                      --data '{"value": {"src-protocol":"amqp091","src-uri":"'${AMQP}'","src-queue":"'${SOURCE_QUEUE}'","dest-protocol": "amqp091","dest-uri":"'${AMQP}'","dest-queue":"'${DESTINATION_QUEUE}'","src-delete-after": "queue-length"}}'
 
                       echo -e "-------- CRON COMPLETE --------\n"
                   resources:
@@ -93,4 +92,8 @@ objects:
                         secretKeyRef:
                           name: ${NAME}-${PHASE}
                           key: rabbitmq-password
+                    - name: SOURCE_QUEUE
+                      value: 'DF.hold'
+                    - name: DESTINATION_QUEUE
+                      value: 'DF.valid'
               restartPolicy: Never
