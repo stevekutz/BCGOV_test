@@ -55,7 +55,7 @@ objects:
           template:
             spec:
               containers:
-                - name: ${CRON_NAME}
+                - name: ${COMPONENT}-job
                   image: 'docker-registry.default.svc:5000/openshift/base-centos7:latest'
                   command:
                     - 'bash'
