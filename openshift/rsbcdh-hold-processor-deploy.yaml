@@ -13,9 +13,6 @@ parameters:
 - name: SUFFIX
 - name: VERSION
 - name: HOST
-- name: RABBITMQ_URL
-- name: RABBITMQ_USER
-- name: RABBITMQ_PASS
 - name: CRON_SCHEDULE
   description: 'Cron-like schedule expression. Default: Once every 5 minutes'
   value: '*/5 * * * *'
@@ -59,12 +56,12 @@ objects:
                       echo -e "-------- STARTING CRON --------\n"
 
                       ENDPOINT="https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold"
-                      echo "endpoint: ${ENDPOINT}"
-                      echo ""
+                      echo -e "endpoint: ${ENDPOINT}\n"
+
                       AMQP="amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}"
-                      echo "amqp connection string: ${AMQP}"
-                      echo ""
-                      echo "source queue: ${SOURCE_QUEUE} -> destination: ${DESTINATION_QUEUE}"
+                      echo -e "amqp connection string: ${AMQP}\n"
+
+                      echo -e "source queue: ${SOURCE_QUEUE} -> destination: ${DESTINATION_QUEUE}\n"
 
                       curl --request PUT --url ${ENDPOINT} \
                       --user ${RABBITMQ_USER}:${RABBITMQ_PASS}  \
