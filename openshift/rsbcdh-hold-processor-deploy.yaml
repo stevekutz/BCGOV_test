@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: cronjob-template
   annotations:
-    description: 'Template for a job that moves messages from the hold queue to valid queue'
+    description: 'Template for a job that moves messages from the DF.hold queue to DF.valid'
     tags: 'cronjob'
 parameters:
 - name: NAME
@@ -14,8 +14,8 @@ parameters:
 - name: VERSION
 - name: HOST
 - name: CRON_SCHEDULE
-  description: 'Cron-like schedule expression. Default: Once every 5 minutes'
-  value: '*/5 * * * *'
+  description: 'Cron-like schedule expression. Default: At 1pm every day'
+  value: '* 13 * * *'
 - name: URL_SUFFIX
   required: true
 - name: CPU_REQUEST
@@ -55,9 +55,10 @@ objects:
                     - >-
                       echo -e "-------- STARTING CRON --------\n"
 
-                      echo -e "URL: ${RABBITMQ_URL}\n USER: ${RABBITMQ_USER}\n PASS: ${RABBITMQ_PASS}\n"
+                      echo -e "URL: ${RABBITMQ_URL}\n
+                      # echo -e "USER: ${RABBITMQ_USER}\n PASS: ${RABBITMQ_PASS}\n"
 
-                      echo -e "queue: ${SOURCE_QUEUE} to: ${DESTINATION_QUEUE}\n"
+                      echo -e "moving messages from: ${SOURCE_QUEUE} to: ${DESTINATION_QUEUE}\n"
 
                       curl -X PUT "http://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold" \
                         --user "${RABBITMQ_USER}:${RABBITMQ_PASS}"  \
