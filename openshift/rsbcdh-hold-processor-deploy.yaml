@@ -55,19 +55,14 @@ objects:
                     - >-
                       echo -e "-------- STARTING CRON --------\n"
 
-                      echo -e "URL: ${RABBITMQ_URL}\n"
-                      echo -e "USER: ${RABBITMQ_USER}\n"
-                      echo -e "PASS: ${RABBITMQ_PASS}\n"
-
-                      endpoint="https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold"
-                      echo -e "endpoint: ${endpoint}\n"
+                      echo -e "URL: ${RABBITMQ_URL}\n USER: ${RABBITMQ_USER}\n PASS: ${RABBITMQ_PASS}\n"
 
                       amqp="amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}"
                       echo -e "amqp connection string: ${amqp}\n"
 
                       echo -e "source queue: ${SOURCE_QUEUE} -> destination: ${DESTINATION_QUEUE}\n"
 
-                      curl --request PUT --url ${endpoint} \
+                      curl --request PUT --url "https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold" \
                       --user ${RABBITMQ_USER}:${RABBITMQ_PASS}  \
                       --header "Content-Type: application/json" \
                       --data '{"value": {"src-protocol":"amqp091","src-uri":"'${amqp}'","src-queue":"'${SOURCE_QUEUE}'","dest-protocol": "amqp091","dest-uri":"'${amqp}'","dest-queue":"'${DESTINATION_QUEUE}'","src-delete-after": "queue-length"}}'
