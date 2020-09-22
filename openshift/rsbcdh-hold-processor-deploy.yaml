@@ -55,10 +55,10 @@ objects:
                     - >-
                       echo -e "-------- STARTING CRON --------\n"
 
-                      ENDPOINT="https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold"
+                      ENDPOINT=https://${RABBITMQ_URL}:15672/api/parameters/shovel/%2F/hold
                       echo -e "endpoint: ${ENDPOINT}\n"
 
-                      AMQP="amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}"
+                      AMQP=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_URL}
                       echo -e "amqp connection string: ${AMQP}\n"
 
                       echo -e "source queue: ${SOURCE_QUEUE} -> destination: ${DESTINATION_QUEUE}\n"
