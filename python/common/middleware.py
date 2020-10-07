@@ -469,7 +469,7 @@ def create_payload(**args) -> tuple:
     xml = args.get('xml')
     form_data['xml'] = xml
     args['payload'] = dict({
-            "event_version": "1.4",
+            "event_version": "1.5",
             "event_date_time": datetime.now().isoformat(),
             "event_type": form_name,
             form_name: form_data
