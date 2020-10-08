@@ -100,7 +100,8 @@ def application_create(form_type: str, **args):
             "reviewRoleTypeCd": args.get('applicant_role'),
             "firstGivenNm": args.get('applicant_first_name'),
             "surnameNm": args.get('applicant_last_name'),
-            "formData": args.get('xml_form_data'),
+            # TODO - REMOVE BEFORE FLIGHT "formData": args.get('xml_form_data'),
+            "formData": "YTM0NZomIzI2OTsmIzM0NTueYQ==",
             "manualEntryYN": 'N',
             "noticeSubjectCd": 'PERS',
         }
