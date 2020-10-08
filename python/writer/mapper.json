@@ -207,7 +207,7 @@
                             "destination_name": "fine_amount"
                         },
                         {
-                            "json_name": "wording_number",
+                            "json_name": "wording_nbr",
                             "destination_name": "wording_number"
                         }
                     ]
