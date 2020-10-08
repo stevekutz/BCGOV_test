@@ -130,7 +130,7 @@ def process_incoming_form() -> dict:
             {"try": middleware.transform_hearing_request_type, "fail": []},
             {"try": middleware.force_presentation_type_to_written_if_ineligible_for_oral, "fail": []},
             {"try": middleware.transform_applicant_role_type, "fail": []},
-            {"try": middleware.compress_form_data_xml, "fail": []},
+            # TODO - add this back {"try": middleware.compress_form_data_xml, "fail": []},
             {
                 "try": middleware.save_application_to_vips,
                 "fail": [
