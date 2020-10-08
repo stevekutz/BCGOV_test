@@ -25,21 +25,21 @@ def create_correlation_id(**args) -> tuple:
     return True, args
 
 
-def get_data_from_prohibition_review_form(**args) -> tuple:
+def get_data_from_application_form(**args) -> tuple:
     """
-    Get key data from the prohibition_review_form.  We can be sure
+    Get key data from the prohibition_review form.  We can be sure
     the keys are in the message because the validator checks for
     these message attributes.
     """
     m = args.get('message')
     event_type = m['event_type']
-    args['xml_form_data'] = m[event_type]['xml']
+    args['xml_base64'] = m[event_type]['xml']
     args['applicant_role_raw'] = m[event_type]['form']['identification-information']['applicant-role']
     args['applicant_first_name'] = m[event_type]['form']['identification-information']['first-name-applicant']
     args['applicant_last_name'] = m[event_type]['form']['identification-information']['last-name-applicant']
     args['applicant_email_address'] = m[event_type]['form']['identification-information']['applicant-email-address']
     args['applicant_phone_number'] = m[event_type]['form']['identification-information']['applicant-phone-number']
-    args['prohibition_number'] = m[event_type]['form']['prohibition-information']['prohibition-number-clean']
+    args['prohibition_number'] = m[event_type]['form']['prohibition-information']['control-prohibition-number']
     args['date_of_service'] = m[event_type]['form']['prohibition-information']['date-of-service']
     args['hearing_request_type'] = m[event_type]['form']['review-information']['hearing-request-type']
     return True, args

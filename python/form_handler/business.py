@@ -44,6 +44,7 @@ def process_incoming_form() -> dict:
             {"try": middleware.create_correlation_id, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
             {"try": middleware.get_data_from_schedule_form, "fail": []},
+            {"try": middleware.clean_prohibition_number, "fail": []},
             {"try": middleware.validate_prohibition_number, "fail": []},
             {"try": middleware.validate_drivers_last_name, "fail": []},
             {"try": middleware.update_vips_status, "fail": []},
@@ -80,7 +81,8 @@ def process_incoming_form() -> dict:
                     {"try": actions.add_to_hold_queue, "fail": []}
                 ]
             },
-            {"try": middleware.get_data_from_prohibition_review_form, "fail": []},
+            {"try": middleware.get_data_from_application_form, "fail": []},
+            {"try": middleware.clean_prohibition_number, "fail": []},
             {"try": middleware.populate_driver_name_fields_if_null, "fail": []},
             {"try": middleware.create_correlation_id, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
@@ -130,7 +132,7 @@ def process_incoming_form() -> dict:
             {"try": middleware.transform_hearing_request_type, "fail": []},
             {"try": middleware.force_presentation_type_to_written_if_ineligible_for_oral, "fail": []},
             {"try": middleware.transform_applicant_role_type, "fail": []},
-            # TODO - add this back {"try": middleware.compress_form_data_xml, "fail": []},
+            {"try": middleware.compress_form_data_xml, "fail": []},
             {
                 "try": middleware.save_application_to_vips,
                 "fail": [
