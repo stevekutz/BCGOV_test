@@ -174,7 +174,7 @@ def create(endpoint: str, user: str, password: str,  payload: dict, correlation_
         return False, error
 
     data = response.json()
-    if response.status_code == 201:
+    if response.status_code == 201 or response.status_code == 200:
         logging.info("create success response: {}".format(json.dumps(data)))
         return True, data
     logging.info('VIPS create() was not successful')
