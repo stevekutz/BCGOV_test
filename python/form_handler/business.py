@@ -19,13 +19,14 @@ def process_incoming_form() -> dict:
             },
             {"try": middleware.get_data_from_disclosure_event, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
-            {"try": middleware.is_review_in_the_future, "fail": [
-                # No further disclosure will be sent. The review has concluded.
-                ]},
+
             {"try": middleware.create_correlation_id, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
             {"try": middleware.update_vips_status, "fail": []},
             {"try": middleware.prohibition_exists_in_vips, "fail": []},
+            {"try": middleware.is_review_in_the_future, "fail": [
+                # No further disclosure will be sent. The review has concluded.
+            ]},
             {"try": middleware.is_any_unsent_disclosure, "fail": [
                 # No new disclosure to send at present, try again later
                 {"try": actions.add_hold_before_sending_disclosure, "fail": []},

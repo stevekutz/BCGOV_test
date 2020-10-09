@@ -288,7 +288,7 @@ def admin_unknown_event_type(**args) -> tuple:
     return send_email_to_admin(config=config, title=title, body=body_text), args
 
 
-def send_email(to: list, subject: str, config, template, api_root_url: str, token: str, attachments=None) -> tuple:
+def send_email(to: list, subject: str, config, template, api_root_url: str, token: str, attachments=None) -> bool:
     if attachments is None:
         attachments = []
     payload = {
@@ -307,12 +307,13 @@ def send_email(to: list, subject: str, config, template, api_root_url: str, toke
         response = requests.post(api_root_url + '/api/v1/email', headers=auth_header, json=payload)
     except AssertionError as error:
         logging.critical('No response from BC Common Services: {}'.format(json.dumps(error)))
-        return False, error
-    data = response.json()
+        return False
     if response.status_code == 201:
-        return True, data
-    logging.info('response from common services: {}'.format(json.dumps(data)))
-    return False, data
+        data = response.json()
+        logging.info('response from common services successful: {}'.format(json.dumps(data)))
+        return True
+    logging.info('response from common services not successful: {}'.format(response.text))
+    return False
 
 
 def get_common_services_access_token(config):

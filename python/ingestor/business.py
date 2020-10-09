@@ -24,6 +24,7 @@ def get_available_time_slots() -> list:
         {"try": middleware.paid_not_more_than_24hrs_ago, "fail": []},
 
         {"try": middleware.application_has_been_paid, "fail": []},
+        {"try": middleware.review_has_not_been_scheduled, "fail": []},
         {"try": middleware.get_application_details, "fail": []},
         {"try": middleware.valid_application_received_from_vips, "fail": []},
         {"try": middleware.get_invoice_details, "fail": []},
@@ -78,9 +79,9 @@ def okay_to_submit_evidence() -> list:
         {"try": middleware.prohibition_exists_in_vips, "fail": []},
         {"try": middleware.user_submitted_last_name_matches_vips, "fail": []},
         {"try": middleware.application_has_been_saved_to_vips, "fail": []},
+        {"try": middleware.review_has_been_scheduled, "fail": []},
         {"try": middleware.get_payment_status, "fail": []},
         {"try": middleware.received_valid_payment_status, "fail": []},
         {"try": middleware.application_has_been_paid, "fail": []},
-        # {"try": middleware.review_time_slot_selected, "fail": []}
         # {"try": middleware.review_must_be_in_the_future, "fail": []}
        ]

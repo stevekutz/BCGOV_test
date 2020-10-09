@@ -521,10 +521,11 @@ review_date_in_the_future = [
 
 @pytest.mark.parametrize("review_date, current_time_is, expected", review_date_in_the_future)
 def test_review_date_in_the_future(review_date, current_time_is, expected):
+    vips_data = dict({'reviewStartDtm': review_date})
     tz = pytz.timezone('America/Vancouver')
     today_unaware = datetime.strptime(current_time_is, "%Y-%m-%d %H:%M:%S")
     today_date = tz.localize(today_unaware, is_dst=False)
     print('today date is: {}'.format(today_date.isoformat()))
     response, args = middleware.is_review_in_the_future(
-        today_date=today_date, send_disclosure_until=review_date)
+        today_date=today_date, vips_data=vips_data)
     assert response is expected

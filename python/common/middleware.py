@@ -705,7 +705,6 @@ def create_disclosure_event(**args) -> tuple:
             "applicant_name": "{} {}".format(vips_application['firstGivenNm'], vips_application['surnameNm']),
             "email": vips_application['email'],
             "prohibition_number": args.get('prohibition_number'),
-            "review_date": args.get('requested_time_slot')['reviewStartDtm']
         }
     })
     return True, args
@@ -776,11 +775,42 @@ def get_data_from_disclosure_event(**args) -> tuple:
     args['applicant_name'] = m[event_type]['applicant_name']
     args['applicant_email_address'] = m[event_type]['email']
     args['prohibition_number'] = m[event_type]['prohibition_number']
-    args['review_date'] = m[event_type]['review_date']
     return True, args
 
 
 def is_review_in_the_future(**args) -> tuple:
-    review_start_datetime = vips_str_to_datetime(args.get('review_date'))
+    """
+    Get review date start time from VIPS and compare it with today's
+    date.  If the review is in the future, return True; otherwise
+    False
+    """
+    vips_data = args.get('vips_data')
+    review_start_datetime = vips_str_to_datetime(vips_data['reviewStartDtm'])
     today_date = args.get('today_date')
     return today_date < review_start_datetime, args
+
+
+def review_has_not_been_scheduled(**args) -> tuple:
+    """
+    Check that review has not previously been scheduled
+    """
+    vips_data = args.get('vips_data')
+    if 'reviewStartDtm' not in vips_data:
+        return True, args
+    error = 'A review has previously been scheduled'
+    logging.info(error)
+    args['error_string'] = error
+    return False, args
+
+
+def review_has_been_scheduled(**args) -> tuple:
+    """
+    Check that review has been scheduled
+    """
+    vips_data = args.get('vips_data')
+    if 'reviewStartDtm' in vips_data:
+        return True, args
+    error = 'A review has not been scheduled'
+    logging.info(error)
+    args['error_string'] = error
+    return False, args
