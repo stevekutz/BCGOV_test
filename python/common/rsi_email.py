@@ -336,7 +336,16 @@ def get_jinja2_env():
 
 
 def get_subject_string(template_name: str, prohibition_number: str):
-    subjects = {
+    subjects = get_template_subjects()
+    if template_name in subjects:
+        subject_string = subjects[template_name].format(prohibition_number)
+        logging.info(subject_string)
+        return subject_string
+    return None
+
+
+def get_template_subjects() -> dict:
+    return dict({
         "last_name_mismatch.html": "Re: Driving Prohibition Review - Prohibition Number and Name Don't Match - {}",
         "application_not_yet_in_vips.html": 'Re: Driving Prohibition Review - Not Entered Yet - {}',
         "application_already_created.html": "Re: Driving Prohibition Review - Already Applied - {}",
@@ -348,8 +357,5 @@ def get_subject_string(template_name: str, prohibition_number: str):
         "application_not_received_in_time.html": "Re: Driving Prohibition Review - 7-day Application Window Missed - {}",
         "application_accepted.html": "Re: Driving Prohibition Review - Application Received  - {}",
         "send_disclosure_documents.html": "Re: Driving Prohibition Review - Disclosure Documents Attached - {}",
-        "send_evidence_instructions.html": "Re: Driving Prohibition ReviewSubmit Evidence - {}"
-    }
-    subject_string = subjects[template_name].format(prohibition_number)
-    logging.info(subject_string)
-    return subject_string
+        "send_evidence_instructions.html": "Re: Driving Prohibition Review - Submit Evidence - {}"
+    })

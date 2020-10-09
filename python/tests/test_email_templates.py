@@ -1,4 +1,5 @@
-from python.common.rsi_email import get_jinja2_env
+from python.common.rsi_email import get_jinja2_env, get_subject_string
+import pytest
 
 
 def test_admin_notice_method():
@@ -46,3 +47,13 @@ def test_schedule_review_email():
     assert number in html
     assert "Please do not respond to this email" in html
 
+
+template_names = [
+    ("last_name_mismatch.html", "Re: Driving Prohibition Review - Prohibition Number and Name Don't Match - 9999"),
+    ('template_does_not_exist.html', None)
+]
+
+
+@pytest.mark.parametrize("template_name, subject_string", template_names)
+def test_get_subject_string(template_name, subject_string):
+    assert get_subject_string(template_name, '9999') == subject_string
