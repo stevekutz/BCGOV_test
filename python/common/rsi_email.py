@@ -27,26 +27,29 @@ def application_accepted(**args):
 
 
 def send_form_xml_to_admin(**args):
-    config = args.get('config')
-    prohibition_number = args.get('prohibition_number')
-    subject = 'DEBUG - Form XML attached - {}'.format(prohibition_number)
-    template = get_jinja2_env().get_template('admin_notice.html')
-    return send_email(
-        [config.ADMIN_EMAIL_ADDRESS],
-        subject,
-        config,
-        template.render(
-            body='XML attached',
-            message='message xml attached',
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config),
-        [{
-            "content": args.get('xml'),
-            "contentType": "string",
-            "encoding": "base64",
-            "filename": "submitted_form.xml"
-        }]), args
+    xml = args.get('xml', None)
+    if xml:
+        config = args.get('config')
+        prohibition_number = args.get('prohibition_number')
+        subject = 'DEBUG - Form XML attached - {}'.format(prohibition_number)
+        template = get_jinja2_env().get_template('admin_notice.html')
+        return send_email(
+            [config.ADMIN_EMAIL_ADDRESS],
+            subject,
+            config,
+            template.render(
+                body='XML attached',
+                message='message xml attached',
+                subject=subject),
+            config.COMM_SERV_API_ROOT_URL,
+            get_common_services_access_token(config),
+            [{
+                "content": args.get('xml'),
+                "contentType": "string",
+                "encoding": "base64",
+                "filename": "submitted_form.xml"
+            }]), args
+    logging.info('No XML to send')
 
 
 def send_email_to_admin(**args):
@@ -289,10 +292,7 @@ def admin_unknown_event_type(**args) -> tuple:
 
 
 def send_email(to: list, subject: str, config, template, api_root_url: str, token: str, attachments=None) -> bool:
-    if attachments is None:
-        attachments = []
     payload = {
-        "attachments": attachments,
         "bodyType": "html",
         "body": template,
         "from": config.REPLY_EMAIL_ADDRESS,
@@ -301,6 +301,8 @@ def send_email(to: list, subject: str, config, template, api_root_url: str, toke
         "subject": subject,
         "to": to
     }
+    if attachments is not None:
+        payload['attachments'] = attachments
     logging.info('Sending email to: {} - {}'.format(to, subject))
     auth_header = {"Authorization": "Bearer {}".format(token)}
     try:
