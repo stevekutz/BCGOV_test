@@ -1,6 +1,6 @@
-from keycloak import KeycloakOpenID
+
 from python.common.config import Config
-import requests
+import python.common.common_email_services as common_email_services 
 import json
 import logging
 from jinja2 import Environment, select_autoescape, FileSystemLoader
@@ -12,28 +12,27 @@ def application_accepted(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = "application_accepted.html"
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def send_form_xml_to_admin(**args):
-    xml = args.get('xml', None)
+    xml = args.get('xml_base64', None)
     if xml:
         config = args.get('config')
         prohibition_number = args.get('prohibition_number')
         subject = 'DEBUG - Form XML attached - {}'.format(prohibition_number)
         template = get_jinja2_env().get_template('admin_notice.html')
-        return send_email(
+        return common_email_services.send_email(
             [config.ADMIN_EMAIL_ADDRESS],
             subject,
             config,
@@ -41,10 +40,8 @@ def send_form_xml_to_admin(**args):
                 body='XML attached',
                 message='message xml attached',
                 subject=subject),
-            config.COMM_SERV_API_ROOT_URL,
-            get_common_services_access_token(config),
             [{
-                "content": args.get('xml'),
+                "content": args.get('xml_base64'),
                 "contentType": "string",
                 "encoding": "base64",
                 "filename": "submitted_form.xml"
@@ -58,67 +55,62 @@ def send_email_to_admin(**args):
     message = args.get('message')
     body = args.get('body')
     template = get_jinja2_env().get_template('admin_notice.html')
-    return send_email(
+    return common_email_services.send_email(
         [config.ADMIN_EMAIL_ADDRESS],
         subject,
         config,
-        template.render(subject=subject, body=body, message=json.dumps(message)),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+        template.render(subject=subject, body=body, message=json.dumps(message))), args
 
 
 def applicant_prohibition_served_more_than_7_days_ago(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
-    t = "application_not_received_in_time.html"
+    t = "not_received_in_time.html"
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_licence_not_seized(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = "licence_not_seized.html"
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_prohibition_not_found(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = "application_not_found.html"
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_to_schedule_review(**args):
@@ -130,21 +122,20 @@ def applicant_to_schedule_review(**args):
     config = args.get('config')
     vips_application = args.get('vips_application')
     t = 'select_review_date.html'
+    args['email_template'] = t
     email_address = vips_application['email']
     full_name = "{} {}".format(vips_application['firstGivenNm'], vips_application['surnameNm'])
     prohibition_number = args.get('prohibition_number')
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [email_address],
         subject,
         config,
         template.render(
             full_name=full_name,
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_schedule_confirmation(**args):
@@ -157,11 +148,12 @@ def applicant_schedule_confirmation(**args):
     email_address = vips_application['email']
     presentation_type = vips_application['presentationTypeCd']
     t = 'review_date_confirmed_{}.html'.format(presentation_type)
+    args['email_template'] = t
     phone = vips_application['phoneNo']
     prohibition_number = args.get('prohibition_number')
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [email_address],
         subject,
         config,
@@ -170,9 +162,7 @@ def applicant_schedule_confirmation(**args):
             prohibition_number=prohibition_number,
             subject=subject,
             phone=phone,
-            human_friendly_time_slot=args.get('friendly_review_time_slot')),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            human_friendly_time_slot=args.get('friendly_review_time_slot'))), args
 
 
 def applicant_last_name_mismatch(**args):
@@ -183,63 +173,61 @@ def applicant_last_name_mismatch(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = 'last_name_mismatch.html'
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_prohibition_not_yet_in_vips(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = 'application_not_yet_in_vips.html'
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def application_already_created(**args):
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = 'application_already_created.html'
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
         template.render(
             full_name=args.get('driver_full_name'),
             prohibition_number=prohibition_number,
-            subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config)), args
+            subject=subject)), args
 
 
 def applicant_disclosure(**args) -> tuple:
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = 'send_disclosure_documents.html'
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
@@ -247,8 +235,6 @@ def applicant_disclosure(**args) -> tuple:
             full_name=args.get('applicant_name'),
             prohibition_number=prohibition_number,
             subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config),
         args.get('disclosure_for_applicant')), args
 
 
@@ -256,9 +242,10 @@ def applicant_evidence_instructions(**args) -> tuple:
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     t = 'send_evidence_instructions.html'
+    args['email_template'] = t
     subject = get_subject_string(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
-    return send_email(
+    return common_email_services.send_email(
         [args.get('applicant_email_address')],
         subject,
         config,
@@ -266,8 +253,6 @@ def applicant_evidence_instructions(**args) -> tuple:
             full_name=args.get('applicant_name'),
             prohibition_number=prohibition_number,
             subject=subject),
-        config.COMM_SERV_API_ROOT_URL,
-        get_common_services_access_token(config),
         args.get('disclosure_for_applicant')), args
 
 
@@ -289,44 +274,6 @@ def admin_unknown_event_type(**args) -> tuple:
     body_text = "An unknown event has been received: " + message['event_type']
     logging.critical('unknown event type: {}'.format(message['event_type']))
     return send_email_to_admin(config=config, title=title, body=body_text), args
-
-
-def send_email(to: list, subject: str, config, template, api_root_url: str, token: str, attachments=None) -> bool:
-    payload = {
-        "bodyType": "html",
-        "body": template,
-        "from": config.REPLY_EMAIL_ADDRESS,
-        "bcc": config.BCC_EMAIL_ADDRESSES.split(','),
-        "encoding": "utf-8",
-        "subject": subject,
-        "to": to
-    }
-    if attachments is not None:
-        payload['attachments'] = attachments
-    logging.info('Sending email to: {} - {}'.format(to, subject))
-    auth_header = {"Authorization": "Bearer {}".format(token)}
-    try:
-        response = requests.post(api_root_url + '/api/v1/email', headers=auth_header, json=payload)
-    except AssertionError as error:
-        logging.critical('No response from BC Common Services: {}'.format(json.dumps(error)))
-        return False
-    if response.status_code == 201:
-        data = response.json()
-        logging.info('response from common services successful: {}'.format(json.dumps(data)))
-        return True
-    logging.info('response from common services not successful: {}'.format(response.text))
-    return False
-
-
-def get_common_services_access_token(config):
-    # Configure Keycloak client
-    keycloak_openid = KeycloakOpenID(server_url=config.COMM_SERV_AUTH_URL,
-                                     client_id=config.COMM_SERV_CLIENT_ID,
-                                     realm_name=config.COMM_SERV_REALM,
-                                     client_secret_key=config.COMM_SERV_CLIENT_SECRET)
-    # Get Token
-    token = keycloak_openid.token('', '', 'client_credentials')
-    return token['access_token']
 
 
 def get_jinja2_env():
@@ -356,7 +303,7 @@ def get_template_subjects() -> dict:
         "select_review_date.html": "Re: Driving Prohibition Review - Select a Review Date - {}",
         "application_not_found.html": "Re: Driving Prohibition Review - Not Found - {}",
         "licence_not_seized.html": "Re: Driving Prohibition Review - Licence Not Returned - {}",
-        "application_not_received_in_time.html": "Re: Driving Prohibition Review - 7-day Application Window Missed - {}",
+        "not_received_in_time.html": "Re: Driving Prohibition Review - 7-day Application Window Missed - {}",
         "application_accepted.html": "Re: Driving Prohibition Review - Application Received  - {}",
         "send_disclosure_documents.html": "Re: Driving Prohibition Review - Disclosure Documents Attached - {}",
         "send_evidence_instructions.html": "Re: Driving Prohibition Review - Submit Evidence - {}"

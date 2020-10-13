@@ -13,21 +13,18 @@ def test_admin_notice_method():
     assert title in html
 
 
-def test_application_received():
-    template = get_jinja2_env().get_template('application_received.html')
+def test_application_accepted():
+    template = get_jinja2_env().get_template('application_accepted.html')
     full_name = 'Bob Smith'
     number = "201234567"
     subject = "Application received"
-    date_received = "August 20, 2020"
     html = template.render(subject=subject,
                            full_name=full_name,
-                           prohibition_number=number,
-                           date_received=date_received)
+                           prohibition_number=number)
     print(html)
     assert full_name in html
     assert subject in html
     assert number in html
-    assert date_received in html
     assert "You must <strong>not</strong> drive" in html
     assert "Please do not respond to this email" in html
 

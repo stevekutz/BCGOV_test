@@ -85,7 +85,7 @@ def clean_prohibition_number(**args) -> tuple:
     return True, args
 
 
-def update_vips_status(**args) -> tuple:
+def get_vips_status(**args) -> tuple:
     """
     Return True if the VIPS API responds to the get status request
     Further middleware required to determine if the query found a prohibition
@@ -232,8 +232,8 @@ def prohibition_served_recently(**args) -> tuple:
 
     # Note: we have to rely on the date_served as submitted by the user -- not the date in VIPS
     # Check to see if enough time has elapsed to enter the prohibition into VIPS
-    today = datetime.today()
-    date_served = datetime.strptime(date_served_string, '%Y-%m-%d')
+    today = args.get('today_date')
+    date_served = helper.localize_timezone(datetime.strptime(date_served_string, '%Y-%m-%d'))
     very_recently_served = (today - date_served).days < delay_days
     if very_recently_served:
         return True, args
@@ -463,10 +463,10 @@ def validate_form_name(**args) -> tuple:
     return True, args
 
 
-def create_payload(**args) -> tuple:
+def create_form_payload(**args) -> tuple:
     form_name = args.get('form_name')
     form_data = args.get('xml_as_dict')
-    xml = args.get('xml')
+    xml = args.get('xml_base64')
     form_data['xml'] = xml
     args['payload'] = dict({
             "event_version": "1.5",
@@ -568,7 +568,7 @@ def get_payment_status(**args) -> tuple:
     if is_api_callout_successful:
         args['vips_payment_data'] = payment_data
         return True, args
-    error = 'the VIPS get_status operation returned an invalid response'
+    error = 'the VIPS payment_get operation returned an invalid response'
     args['error_string'] = error
     logging.info(error)
     return False, args
@@ -715,9 +715,13 @@ def is_any_unsent_disclosure(**args) -> tuple:
     Returns True if there is unsent disclosure to send to applicant
     """
     vips_data = args.get('vips_data')
+    unsent_disclosure = list()
     if 'disclosure' in vips_data:
-        if len(vips_data['disclosure']) > 0:
-            args['disclosures'] = vips_data['disclosure']
+        for item in vips_data['disclosure']:
+            if 'disclosedDtm' not in item:
+                unsent_disclosure.append(item)
+        if len(unsent_disclosure) > 0:
+            args['disclosures'] = unsent_disclosure
             return True, args
     return False, args
 

@@ -22,7 +22,7 @@ def process_incoming_form() -> dict:
 
             {"try": middleware.create_correlation_id, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
-            {"try": middleware.update_vips_status, "fail": []},
+            {"try": middleware.get_vips_status, "fail": []},
             {"try": middleware.prohibition_exists_in_vips, "fail": []},
             {"try": middleware.is_review_in_the_future, "fail": [
                 # No further disclosure will be sent. The review has concluded.
@@ -48,7 +48,7 @@ def process_incoming_form() -> dict:
             {"try": middleware.clean_prohibition_number, "fail": []},
             {"try": middleware.validate_prohibition_number, "fail": []},
             {"try": middleware.validate_drivers_last_name, "fail": []},
-            {"try": middleware.update_vips_status, "fail": []},
+            {"try": middleware.get_vips_status, "fail": []},
             {"try": middleware.prohibition_exists_in_vips, "fail": []},
             {"try": middleware.user_submitted_last_name_matches_vips, "fail": []},
             {"try": middleware.application_has_been_saved_to_vips, "fail": []},
@@ -88,7 +88,7 @@ def process_incoming_form() -> dict:
             {"try": middleware.create_correlation_id, "fail": []},
             {"try": middleware.determine_current_datetime, "fail": []},
             {
-                "try": middleware.update_vips_status,
+                "try": middleware.get_vips_status,
                 "fail": [
                     {"try": actions.add_to_hold_queue, "fail": []}
                 ]
