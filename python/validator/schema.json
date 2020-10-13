@@ -93,7 +93,7 @@
                 },
                 "wording_nbr": {
                   "type": "integer",
-                  "required": true
+                  "required": false
                 }
               }
             }
