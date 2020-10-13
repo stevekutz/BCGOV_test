@@ -16,9 +16,10 @@ def issue_token():
     return authorization.create_token_response()
 
 
-@bp.route('/oauth/revoke', methods=['POST'])
-def revoke_token():
-    return authorization.create_endpoint_response('revocation')
+# *************  Revoke endpoint is disabled as we don't use it *************
+# @bp.route('/oauth/revoke', methods=['POST'])
+# def revoke_token():
+#     return authorization.create_endpoint_response('revocation')
 
 
 @bp.route('/api_v2/search', methods=['GET'])
@@ -112,8 +113,3 @@ def receipt():
             "receipt_date ": payload['receipt_date'],
             "receipt_amount": payload['receipt_amount']
         }))
-
-
-
-
-
