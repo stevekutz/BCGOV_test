@@ -183,7 +183,7 @@ def applicant_schedule_confirmation(**args):
             prohibition_number=prohibition_number,
             subject=content["subject"],
             phone=phone,
-            human_friendly_time_slot=args.get('friendly_review_time_slot'))), args
+            friendly_review_time_slot=args.get('friendly_review_time_slot'))), args
 
 
 def applicant_last_name_mismatch(**args):
@@ -271,12 +271,14 @@ def applicant_disclosure(**args) -> tuple:
 def applicant_evidence_instructions(**args) -> tuple:
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
+    vips_application = args.get('vips_application')
+    email_address = vips_application['email']
     t = 'send_evidence_instructions.html'
     args['email_template'] = t
     content = get_email_content(t, prohibition_number)
     template = get_jinja2_env().get_template(t)
     return common_email_services.send_email(
-        [args.get('applicant_email_address')],
+        [email_address],
         content["subject"],
         config,
         template.render(
@@ -289,6 +291,8 @@ def applicant_evidence_received(**args) -> tuple:
     config = args.get('config')
     prohibition_number = args.get('prohibition_number')
     email_address = args.get('email_address')
+    vips_application = args.get('vips_application')
+    full_name = "{} {}".format(vips_application['firstGivenNm'], vips_application['surnameNm'])
     t = 'evidence_received.html'
     args['email_template'] = t
     content = get_email_content(t, prohibition_number)
@@ -298,6 +302,7 @@ def applicant_evidence_received(**args) -> tuple:
         content["subject"],
         config,
         template.render(
+            full_name=full_name,
             today_date=helper.localize_timezone(datetime.now()).strftime("%B %d, %Y %H:%M:%S"),
             prohibition_number=prohibition_number,
             subject=content["subject"])), args

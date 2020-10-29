@@ -300,7 +300,8 @@ payloads_test = [
 def test_create_payload(form_name, json_data, xml, is_valid):
     xml_as_dict = json.loads(json_data)
     assert isinstance(xml_as_dict, dict)
-    response, args = middleware.create_form_payload(form_name=form_name, xml_as_dict=xml_as_dict, xml_base64=xml)
+    response, args = middleware.create_form_payload(
+        form_name=form_name, xml_as_dict=xml_as_dict, xml_base64=xml, config=Config)
     assert args['payload']['event_type'] == form_name
     assert args['payload'][form_name]['xml'] == xml
     assert args['payload'][form_name] == xml_as_dict
@@ -443,19 +444,19 @@ def test_validate_driver_last_name(last_name, expected):
 
 presentation_types = [
     # type  cause     requested  gets
-    ("IRP", "IRP90",  "ORAL",    "ORAL"),
-    ("IRP", "IRP90",  "WRIT",    "WRIT"),
-    ("IRP", "IRP30",  "ORAL",    "ORAL"),
-    ("IRP", "IRP30",  "WRIT",    "WRIT"),
-    ("IRP", "IRP3",   "ORAL",    "WRIT"),
-    ("IRP", "IRP3",   "WRIT",    "WRIT"),
-    ("IRP", "IRP7",   "ORAL",    "WRIT"),
-    ("IRP", "IRP7",   "WRIT",    "WRIT"),
+    ("IRP", "IRP90FAIL",  "ORAL",    "ORAL"),
+    ("IRP", "IRP90FAIL",  "WRIT",    "WRIT"),
+    ("IRP", "IRP30WARN",  "ORAL",    "ORAL"),
+    ("IRP", "IRP30WARN",  "WRIT",    "WRIT"),
+    ("IRP", "IRP3",       "ORAL",    "WRIT"),
+    ("IRP", "IRP3",       "WRIT",    "WRIT"),
+    ("IRP", "IRP7",       "ORAL",    "WRIT"),
+    ("IRP", "IRP7",       "WRIT",    "WRIT"),
 
-    ("UL",  "",       "ORAL",    "WRIT"),
-    ("UL",  "",       "WRIT",    "WRIT"),
-    ("ADP", "BREATH", "ORAL",    "ORAL"),
-    ("ADP", "BREATH", "WRIT",    "WRIT"),
+    ("UL",  "",           "ORAL",    "WRIT"),
+    ("UL",  "",           "WRIT",    "WRIT"),
+    ("ADP", "BREATH",     "ORAL",    "ORAL"),
+    ("ADP", "BREATH",     "WRIT",    "WRIT"),
 
 ]
 
@@ -520,7 +521,7 @@ def test_get_human_friendly_time_slot_string_for_written_review():
         "reviewEndDtm": "2020-09-04 10:30:00 -07:00"
     }
     friendly_string = vips.time_slot_to_friendly_string(time_slot, "WRIT")
-    assert friendly_string['label'] == 'Fri, Sep 4, 2020'
+    assert friendly_string['label'] == 'Fri, Sep 4, 2020 at 9:30am'
 
 
 review_date_in_the_future = [
