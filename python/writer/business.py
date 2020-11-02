@@ -12,8 +12,10 @@ def process_ekt_events() -> dict:
             {"try": middleware.build_payload_to_send_to_geocoder, "fail": []},
             {"try": middleware.callout_to_geocoder_api, "fail": [
                 # TODO - add error to message
+                {"try": middleware.publish_to_fail_queue, "fail": []},
             ]},
-            {"try": middleware.add_geocode_response_to_message, "fail": []},
+            {"try": middleware.transform_geocoder_response, "fail": []},
+            {"try": middleware.add_geolocation_data_to_message, "fail": []},
             {"try": database.write, "fail": [
                 {"try": middleware.publish_to_fail_queue, "fail": []},
             ]},
