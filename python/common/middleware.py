@@ -751,10 +751,12 @@ def retrieve_unsent_disclosure(**args) -> tuple:
     correlation_id = args.get('correlation_id')
     config = args.get('config')
     disclosure_for_applicant = list()
+    successfully_retrieved_document_ids = list()
     error = False
     for disclosure in disclosures:
         is_successful, data = vips.disclosure_get(disclosure['documentId'], config, correlation_id)
         if is_successful and data['resp'] == "success" and 'data' in data:
+            successfully_retrieved_document_ids.append(disclosure['documentId'])
             mine_type = data['data']['document']['mimeType']
             file_extension = mine_type[-3:]
             disclosure_for_applicant.append(dict(
@@ -769,6 +771,7 @@ def retrieve_unsent_disclosure(**args) -> tuple:
             error = True
     if error is True:
         return False, args
+    args['successfully_retrieved_document_ids'] = successfully_retrieved_document_ids
     args['disclosure_for_applicant'] = disclosure_for_applicant
     return True, args
 
@@ -787,18 +790,14 @@ def if_required_add_adp_disclosure(**args) -> tuple:
 
 
 def mark_disclosure_as_sent(**args) -> tuple:
-    disclosures = args.get('disclosures')
-    correlation_id = args.get('correlation_id')
-    config = args.get('config')
-    disclosure_for_applicant = list()
+    list_of_ids = args.get('successfully_retrieved_document_ids')
     error = False
-    for disclosure in disclosures:
-        successful, data = vips.disclosure_patch(disclosure['documentId'], config, correlation_id, **args)
+    for document_id in list_of_ids:
+        successful, data = vips.disclosure_patch(document_id, **args)
         if not successful:
             error = True
     if error is True:
         return False, args
-    args['disclosure_for_applicant'] = disclosure_for_applicant
     return True, args
 
 
@@ -821,6 +820,28 @@ def is_review_in_the_future(**args) -> tuple:
     review_start_datetime = vips_str_to_datetime(vips_data['reviewStartDtm'])
     today_date = args.get('today_date')
     return today_date < review_start_datetime, args
+
+
+def is_review_more_than_48_hours_in_the_future(**args) -> tuple:
+    """
+    Get review date start time from VIPS and compare it with today's
+    date.  If the review is more than 48 hours in the future, return
+    True; otherwise False
+    """
+    seconds_in_an_hour = 60 * 60
+    vips_data = args.get('vips_data')
+    config = args.get('config')
+    review_start_datetime = vips_str_to_datetime(vips_data['reviewStartDtm'])
+    today_date = args.get('today_date')
+    difference_seconds = (review_start_datetime - today_date).total_seconds()
+    difference_hours = difference_seconds / seconds_in_an_hour
+    is_okay = difference_hours > int(config.HOURS_BEFORE_REVIEW_EVIDENCE_DUE)
+    if is_okay:
+        return True, args
+    error = "You can't submit evidence less than 48 hours before your review."
+    args['error_string'] = error
+    logging.info(error)
+    return False, args
 
 
 def review_has_not_been_scheduled(**args) -> tuple:
