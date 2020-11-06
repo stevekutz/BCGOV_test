@@ -21,6 +21,7 @@ def build_payload_to_send_to_geocoder(**args) -> tuple:
     args['payload'] = dict({
         "address": m[event_type]['violation_highway_desc']
     })
+    args['business_id'] = m[event_type]['ticket_number']
     return True, args
 
 
@@ -55,11 +56,12 @@ def transform_geocoder_response(**args) -> tuple:
     Transform the response from the Geocoder API into a format
     required by the BI geolocation table
     """
+    business_id = args.get('business_id')
     geocoder = args.get('geocoder_response')
     args['geolocation'] = dict({
         "business_program": "BI",
         "business_type": "ETK",
-        "business_id": "???",
+        "business_id": business_id,
         "long": geocoder['data_bc']['lon'],
         "lat": geocoder['data_bc']['lat'],
         # "precision": None,
