@@ -13,7 +13,7 @@ def main(config):
     data = dict()
     data['config'] = config
     connection_string = database.get_database_connection_string(config)
-    # print(connection_string)
+    print(connection_string)
     print(config.GEOCODER_API_URI)
     connection = database.get_database_connection(connection_string)
     is_success, records = select_issuance_records_with_geolocation_data(connection)
@@ -48,7 +48,7 @@ def select_issuance_records_with_geolocation_data(connection) -> tuple:
     logging.info('getting database records')
     cursor = connection.cursor()
 
-    sql = "SELECT TOP 5 i.ticket_number, i.violation_highway_desc" + \
+    sql = "SELECT TOP 5 i.ticket_number, CONCAT(i.violation_highway_desc,', ',i.violation_highway_city)" + \
         " FROM etk.issuances i" + \
         " LEFT JOIN gis.geolocations g ON i.ticket_number = g.business_id" + \
         " WHERE g.business_id is NULL and i.violation_highway_desc IS NOT NULL" + \

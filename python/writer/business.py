@@ -9,6 +9,8 @@ def process_ekt_events() -> dict:
     """
     return {
         "evt_issuance": [
+            {"try": middleware.get_address_from_message, "fail": []},
+            {"try": middleware.clean_up_address, "fail": []},
             {"try": middleware.build_payload_to_send_to_geocoder, "fail": []},
             {"try": middleware.callout_to_geocoder_api, "fail": [
                 # TODO - add error to message
