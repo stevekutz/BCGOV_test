@@ -48,7 +48,7 @@ def select_issuance_records_with_geolocation_data(connection) -> tuple:
     logging.info('getting database records')
     cursor = connection.cursor()
 
-    sql = "SELECT TOP 5 i.ticket_number, CONCAT(i.violation_highway_desc,', ',i.violation_highway_city)" + \
+    sql = "SELECT TOP 5 i.ticket_number, CONCAT(i.violation_highway_desc,', ',i.violation_city_name)" + \
         " FROM etk.issuances i" + \
         " LEFT JOIN gis.geolocations g ON i.ticket_number = g.business_id" + \
         " WHERE g.business_id is NULL and i.violation_highway_desc IS NOT NULL" + \

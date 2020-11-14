@@ -19,7 +19,7 @@ def publish_to_fail_queue(**args) -> tuple:
 def get_address_from_message(**args) -> tuple:
     m = args.get('message')
     event_type = m['event_type']
-    args['address_raw'] = m[event_type]['violation_highway_desc'] + ", " + m[event_type]['violation_highway_city']
+    args['address_raw'] = m[event_type]['violation_highway_desc'] + ", " + m[event_type]['violation_city_name']
     args['business_id'] = m[event_type]['ticket_number']
     return True, args
 
